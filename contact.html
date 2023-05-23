@@ -126,7 +126,7 @@
         </div>
       </div>
     </nav>
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-4">
       <div class="container p-2 pt-5 pb-0">
         <div
           class="container d-flex flex-column justify-content-center align-items-center text-light"
@@ -141,6 +141,8 @@
             class="w-50 p-3 rounded border mt-2"
             id="form"
             style="background-color: rgb(55, 55, 55)"
+            action="mail.php"
+            method="post"
           >
             <div class="form-group">
               <label for="name">Name:</label>
@@ -148,6 +150,7 @@
                 type="text"
                 class="form-control mt-3 mb-4 text-light"
                 id="name"
+                name="name"
                 placeholder="Enter your name"
                 required
                 style="background-color: rgb(43, 43, 43)"
@@ -160,6 +163,7 @@
                 type="email"
                 class="form-control mt-3 mb-4 text-light"
                 id="email"
+                name="email"
                 placeholder="Enter your email"
                 required
                 style="background-color: rgb(43, 43, 43)"
@@ -171,6 +175,7 @@
               <textarea
                 class="form-control mt-3 mb-4 text-light"
                 id="message"
+                name="message"
                 placeholder="Enter your message"
                 rows="4"
                 required
@@ -178,7 +183,10 @@
               ></textarea>
             </div>
 
-            <button type="submit" class="btn btn-dark border fw-bold mt-2">
+            <button
+              type="submit"
+              class="btn btn-dark border fw-bold mt-2"
+            >
               Submit
             </button>
           </form>
@@ -207,5 +215,51 @@
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     ></script>
+    <script>
+      document
+        .getElementById("form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent form submission
+
+          var name = document.getElementById("name").value;
+          var email = document.getElementById("email").value;
+          var message = document.getElementById("message").value;
+
+          var params = {
+            name: name,
+            email: email,
+            message: message,
+          };
+
+          var formData = new URLSearchParams();
+          for (var key in params) {
+            formData.append(key, params[key]);
+          }
+
+          fetch("mail.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then(function (response) {
+              if (response.ok) {
+                // Handle successful form submission, e.g., show success message
+                console.log("Email sent successfully");
+                alert("Email sent successfully");
+              } else if (response.status === 405) {
+                // Method Not Allowed
+                alert("The form submission method is not allowed.");
+              } else {
+                // Handle other errors
+                console.error("Error sending email");
+                alert("Error sending email");
+              }
+            })
+            .catch(function (error) {
+              // Handle form submission error
+              console.error("Error sending email:", error);
+              alert("Error sending email:", error);
+            });
+        });
+    </script>
   </body>
 </html>
